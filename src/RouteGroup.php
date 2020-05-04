@@ -62,6 +62,10 @@ final class RouteGroup
      */
     public function addMiddleware($middleware): self
     {
+        if (!$middleware instanceof MiddlewareInterface) {
+            $middleware = $this->container->get($middleware);
+        }
+
         $this->pipeline->pushMiddleware($middleware);
 
         return $this;
