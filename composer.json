@@ -16,12 +16,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Spiral\\Template\\": "src/"
+      "Spiral\\Router\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Spiral\\Template\\Tests\\": "tests/Template/"
+      "Spiral\\Router\\Tests\\": "tests/Router/"
     }
   }
 }
