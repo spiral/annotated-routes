@@ -23,7 +23,7 @@ use Spiral\Router\Bootloader as Router;
 
 protected const LOAD = [
     // ...
-    Router\AnnotatedRouteBootloader::class,
+    Router\AnnotatedRoutesBootloader::class,
     // ...
 ];
 ```

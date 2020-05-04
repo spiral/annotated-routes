@@ -26,7 +26,7 @@ use Spiral\Router\RouterInterface;
 /**
  * Configures application routes using annotations and pre-defined configuration groups.
  */
-final class AnnotatedRouteBootloader extends Bootloader implements SingletonInterface
+final class AnnotatedRoutesBootloader extends Bootloader implements SingletonInterface
 {
     public const MEMORY_SECTION = 'routes';
 
@@ -56,14 +56,6 @@ final class AnnotatedRouteBootloader extends Bootloader implements SingletonInte
     }
 
     /**
-     * @return GroupRegistry
-     */
-    public function getGroupRegistry(): GroupRegistry
-    {
-        return $this->groupRegistry;
-    }
-
-    /**
      * @param EnvironmentInterface $env
      * @param ConsoleBootloader    $console
      * @param RouterInterface      $router
@@ -74,7 +66,7 @@ final class AnnotatedRouteBootloader extends Bootloader implements SingletonInte
         EnvironmentInterface $env,
         RouterInterface $router,
         RouteLocator $locator
-    ) {
+    ): void {
         $console->addCommand(ResetCommand::class);
 
         $cached = $env->get('ROUTE_CACHE', !$env->get('DEBUG'));
@@ -87,6 +79,14 @@ final class AnnotatedRouteBootloader extends Bootloader implements SingletonInte
         }
 
         $this->configureRoutes($router, $schema);
+    }
+
+    /**
+     * @return GroupRegistry
+     */
+    public function getGroupRegistry(): GroupRegistry
+    {
+        return $this->groupRegistry;
     }
 
     /**

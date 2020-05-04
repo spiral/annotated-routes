@@ -13,7 +13,7 @@ namespace Spiral\Router\Command;
 
 use Spiral\Boot\MemoryInterface;
 use Spiral\Console\Command;
-use Spiral\Router\Bootloader\AnnotatedRouteBootloader;
+use Spiral\Router\Bootloader\AnnotatedRoutesBootloader;
 
 final class ResetCommand extends Command
 {
@@ -23,9 +23,9 @@ final class ResetCommand extends Command
     /**
      * @param MemoryInterface $memory
      */
-    public function perform(MemoryInterface $memory)
+    public function perform(MemoryInterface $memory): void
     {
-        $memory->saveData(AnnotatedRouteBootloader::MEMORY_SECTION, null);
-        $this->writeln("<info>Done.</info>");
+        $memory->saveData(AnnotatedRoutesBootloader::MEMORY_SECTION, null);
+        $this->writeln('<info>Done.</info>');
     }
 }

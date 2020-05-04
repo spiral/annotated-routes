@@ -20,7 +20,7 @@ use Spiral\Router\Target\Action;
 
 class GroupTest extends TestCase
 {
-    public function testCoreString()
+    public function testCoreString(): void
     {
         $group = new RouteGroup(new Container(), new Pipeline(new Container()));
 
@@ -37,7 +37,7 @@ class GroupTest extends TestCase
         $this->assertInstanceOf(TestCore::class, $this->getActionProperty($t, 'core'));
     }
 
-    public function testCoreObject()
+    public function testCoreObject(): void
     {
         $group = new RouteGroup(new Container(), new Pipeline(new Container()));
 
@@ -54,7 +54,7 @@ class GroupTest extends TestCase
         $this->assertInstanceOf(TestCore::class, $this->getActionProperty($t, 'core'));
     }
 
-    public function testMiddleware()
+    public function testMiddleware(): void
     {
         $group = new RouteGroup(new Container(), new Pipeline(new Container()));
         $group->addMiddleware(TestMiddleware::class);

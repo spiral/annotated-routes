@@ -15,5 +15,4 @@ use Spiral\Core\AbstractCore;
 
 class TestCore extends AbstractCore
 {
-
 }

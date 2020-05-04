@@ -17,7 +17,7 @@ use Spiral\Router\GroupRegistry;
 
 class RegistryTest extends TestCase
 {
-    public function testSameGroup()
+    public function testSameGroup(): void
     {
         $registry = new GroupRegistry(new Container());
 

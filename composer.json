@@ -11,6 +11,8 @@
   "require-dev": {
     "phpunit/phpunit": "~8.0",
     "mockery/mockery": "^1.1",
+    "laminas/laminas-diactoros": "^2.3",
+    "spiral/console": "^1.3",
     "spiral/framework": "^2.4",
     "spiral/code-style": "^1.0"
   },
@@ -21,7 +23,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Spiral\\Router\\Tests\\": "tests/Router/"
+      "Spiral\\Router\\Tests\\": "tests/Router/",
+      "Spiral\\App\\": "tests/app/src"
     }
   }
 }
