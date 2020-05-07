@@ -21,7 +21,7 @@ use Spiral\Router\Target\Action;
 /**
  * RouteGroup provides the ability to configure multiple routes to controller/actions using same presets.
  */
-final class RouteGroup
+final class RouteGroup implements CoreInterface
 {
     /** @var ContainerInterface */
     private $container;
@@ -40,6 +40,22 @@ final class RouteGroup
     {
         $this->container = $container;
         $this->pipeline = $pipeline;
+    }
+
+    /**
+     * @param string $controller
+     * @param string $action
+     * @param array  $parameters
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function callAction(string $controller, string $action, array $parameters = [])
+    {
+        if ($this->core !== null) {
+            return $this->core->callAction($controller, $action, $parameters);
+        }
+
+        return $this->container->get(CoreInterface::class)->callAction($controller, $action, $parameters);
     }
 
     /**
@@ -80,11 +96,7 @@ final class RouteGroup
     public function createRoute(string $pattern, string $controller, string $action): Route
     {
         $action = new Action($controller, $action);
-        if ($this->core !== null) {
-            $action = $action->withCore($this->core);
-        }
-
-        $route = new Route($pattern, $action);
+        $route = new Route($pattern, $action->withCore($this));
 
         // all routes within group share the same middleware pipeline
         $route = $route->withMiddleware($this->pipeline);

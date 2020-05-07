@@ -34,7 +34,7 @@ class GroupTest extends TestCase
         $this->assertSame('controller', $this->getProperty($t, 'controller'));
         $this->assertSame('method', $this->getProperty($t, 'action'));
 
-        $this->assertInstanceOf(TestCore::class, $this->getActionProperty($t, 'core'));
+        $this->assertSame($group, $this->getActionProperty($t, 'core'));
     }
 
     public function testCoreObject(): void
@@ -51,7 +51,7 @@ class GroupTest extends TestCase
         $this->assertSame('controller', $this->getProperty($t, 'controller'));
         $this->assertSame('method', $this->getProperty($t, 'action'));
 
-        $this->assertInstanceOf(TestCore::class, $this->getActionProperty($t, 'core'));
+        $this->assertSame($group, $this->getActionProperty($t, 'core'));
     }
 
     public function testMiddleware(): void
