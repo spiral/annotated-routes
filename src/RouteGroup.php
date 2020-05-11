@@ -26,6 +26,9 @@ final class RouteGroup implements CoreInterface
     /** @var ContainerInterface */
     private $container;
 
+    /** @var string */
+    private $prefix = '';
+
     /** @var Pipeline */
     private $pipeline;
 
@@ -57,6 +60,20 @@ final class RouteGroup implements CoreInterface
 
         return $this->container->get(CoreInterface::class)->callAction($controller, $action, $parameters);
     }
+
+    /**
+     * Prefix added to all the routes.
+     *
+     * @param string $prefix
+     * @return $this
+     */
+    public function setPrefix(string $prefix): self
+    {
+        $this->prefix = $prefix;
+
+        return $this;
+    }
+
 
     /**
      * @param CoreInterface|string|Autowire $core
@@ -96,7 +113,7 @@ final class RouteGroup implements CoreInterface
     public function createRoute(string $pattern, string $controller, string $action): Route
     {
         $action = new Action($controller, $action);
-        $route = new Route($pattern, $action->withCore($this));
+        $route = new Route($this->prefix . $pattern, $action->withCore($this));
 
         // all routes within group share the same middleware pipeline
         $route = $route->withMiddleware($this->pipeline);
