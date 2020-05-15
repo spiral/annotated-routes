@@ -46,14 +46,10 @@ class MiddlewareBootloader extends Bootloader
 {
     public function boot(GroupRegistry $registry)
     {
-        $registry->getGroup('default')->addMiddleware(
-            new class implements MiddlewareInterface {
-                function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-                {
-                    return $handler->handle($request)->withAddedHeader("hello", "World");
-                }
-            }
-        );
+        $registry
+            ->getGroup('api')
+            ->setPrefix('api/v1')
+            ->addMiddleware(App\Security\ApiAuthMiddleware::class);
     }
 }
 ```
@@ -77,7 +73,7 @@ use Spiral\Router\Annotation\Route;
 class HomeController
 {
     /**
-     * @Route(route="/", name="home", methods="GET")
+     * @Route(route="/", name="home", methods="GET", group="api")
      */
     public function index()
     {
