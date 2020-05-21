@@ -13,16 +13,20 @@ namespace Spiral\Router\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
+use Spiral\Http\Diactoros\UriFactory;
 use Spiral\Http\Pipeline;
 use Spiral\Router\RouteGroup;
+use Spiral\Router\Router;
 use Spiral\Router\Target\AbstractTarget;
 use Spiral\Router\Target\Action;
+use Spiral\Router\UriHandler;
 
 class GroupTest extends TestCase
 {
     public function testCoreString(): void
     {
-        $group = new RouteGroup(new Container(), new Pipeline(new Container()));
+        $router = new Router('/', new UriHandler(new UriFactory()), new Container());
+        $group = new RouteGroup(new Container(), $router, new Pipeline(new Container()));
 
         $group->setCore(TestCore::class);
 
@@ -34,12 +38,13 @@ class GroupTest extends TestCase
         $this->assertSame('controller', $this->getProperty($t, 'controller'));
         $this->assertSame('method', $this->getProperty($t, 'action'));
 
-        $this->assertSame($group, $this->getActionProperty($t, 'core'));
+        $this->assertInstanceOf(TestCore::class, $this->getActionProperty($t, 'core'));
     }
 
     public function testCoreObject(): void
     {
-        $group = new RouteGroup(new Container(), new Pipeline(new Container()));
+        $router = new Router('/', new UriHandler(new UriFactory()), new Container());
+        $group = new RouteGroup(new Container(), $router, new Pipeline(new Container()));
 
         $group->setCore(new TestCore(new Container()));
 
@@ -51,12 +56,13 @@ class GroupTest extends TestCase
         $this->assertSame('controller', $this->getProperty($t, 'controller'));
         $this->assertSame('method', $this->getProperty($t, 'action'));
 
-        $this->assertSame($group, $this->getActionProperty($t, 'core'));
+        $this->assertInstanceOf(TestCore::class, $this->getActionProperty($t, 'core'));
     }
 
     public function testMiddleware(): void
     {
-        $group = new RouteGroup(new Container(), new Pipeline(new Container()));
+        $router = new Router('/', new UriHandler(new UriFactory()), new Container());
+        $group = new RouteGroup(new Container(), $router, new Pipeline(new Container()));
         $group->addMiddleware(TestMiddleware::class);
 
         $r = $group->createRoute('/', 'controller', 'method');

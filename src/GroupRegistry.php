@@ -17,12 +17,12 @@ use Spiral\Core\FactoryInterface;
 /**
  * Manages the presets for various route groups.
  */
-final class GroupRegistry
+final class GroupRegistry implements \IteratorAggregate
 {
     /** @var ContainerInterface */
     private $factory;
 
-    /** @var RouteGroup */
+    /** @var RouteGroup[] */
     private $groups = [];
 
     /**
@@ -44,5 +44,13 @@ final class GroupRegistry
         }
 
         return $this->groups[$name];
+    }
+
+    /**
+     * @return RouteGroup[]|\ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->groups);
     }
 }

@@ -21,7 +21,6 @@ use Spiral\Core\Container\SingletonInterface;
 use Spiral\Router\Command\ResetCommand;
 use Spiral\Router\GroupRegistry;
 use Spiral\Router\RouteLocator;
-use Spiral\Router\RouterInterface;
 
 /**
  * Configures application routes using annotations and pre-defined configuration groups.
@@ -36,14 +35,14 @@ final class AnnotatedRoutesBootloader extends Bootloader implements SingletonInt
     ];
 
     protected const SINGLETONS = [
-        GroupRegistry::class => [self::class, 'getGroupRegistry']
+        GroupRegistry::class => [self::class, 'getGroups']
     ];
 
     /** @var MemoryInterface */
     private $memory;
 
     /** @var GroupRegistry */
-    private $groupRegistry;
+    private $groups;
 
     /**
      * @param MemoryInterface $memory
@@ -52,21 +51,16 @@ final class AnnotatedRoutesBootloader extends Bootloader implements SingletonInt
     public function __construct(MemoryInterface $memory, GroupRegistry $groupRegistry)
     {
         $this->memory = $memory;
-        $this->groupRegistry = $groupRegistry;
+        $this->groups = $groupRegistry;
     }
 
     /**
      * @param EnvironmentInterface $env
      * @param ConsoleBootloader    $console
-     * @param RouterInterface      $router
      * @param RouteLocator         $locator
      */
-    public function boot(
-        ConsoleBootloader $console,
-        EnvironmentInterface $env,
-        RouterInterface $router,
-        RouteLocator $locator
-    ): void {
+    public function boot(ConsoleBootloader $console, EnvironmentInterface $env, RouteLocator $locator): void
+    {
         $console->addCommand(ResetCommand::class);
 
         $cached = $env->get('ROUTE_CACHE', !$env->get('DEBUG'));
@@ -78,38 +72,38 @@ final class AnnotatedRoutesBootloader extends Bootloader implements SingletonInt
             $this->memory->saveData(self::MEMORY_SECTION, $schema);
         }
 
-        $this->configureRoutes($router, $schema);
+        $this->configureRoutes($schema);
+
+        foreach ($this->groups as $group) {
+            $group->flushRoutes();
+        }
     }
 
     /**
      * @return GroupRegistry
      */
-    public function getGroupRegistry(): GroupRegistry
+    public function getGroups(): GroupRegistry
     {
-        return $this->groupRegistry;
+        return $this->groups;
     }
 
     /**
-     * @param RouterInterface $router
-     * @param array           $routes
+     * @param array $routes
      */
-    private function configureRoutes(RouterInterface $router, array $routes): void
+    private function configureRoutes(array $routes): void
     {
         foreach ($routes as $name => $schema) {
-            $route = $this->groupRegistry->getGroup($schema['group'])->createRoute(
-                $schema['pattern'],
-                $schema['controller'],
-                $schema['action']
-            );
-
-            if ($schema['defaults'] !== []) {
-                $route = $route->withDefaults($schema['defaults']);
-            }
-
-            $router->setRoute(
-                $name,
-                $route->withVerbs(...$schema['verbs'])->withMiddleware(...$schema['middleware'])
-            );
+            $this->groups
+                ->getGroup($schema['group'])
+                ->registerRoute(
+                    $name,
+                    $schema['pattern'],
+                    $schema['controller'],
+                    $schema['action'],
+                    $schema['verbs'],
+                    $schema['defaults'],
+                    $schema['middleware']
+                );
         }
     }
 }
