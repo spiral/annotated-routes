@@ -1,12 +1,5 @@
 <?php
 
-/**
- * This file is part of Spiral Framework package.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 declare(strict_types=1);
 
 namespace Spiral\Tests\Router;
@@ -32,6 +25,6 @@ abstract class TestCase extends BaseTestCase
             'app'  => __DIR__ . '/App',
         ];
 
-        return App::init($config, new Environment($env), false);
+        return (App::create($config, false))->run(new Environment($env));
     }
 }

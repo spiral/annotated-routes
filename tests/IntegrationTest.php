@@ -1,18 +1,12 @@
 <?php
 
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Spiral\Tests\Router;
 
-use Laminas\Diactoros\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class IntegrationTest extends TestCase
 {
@@ -107,21 +101,22 @@ class IntegrationTest extends TestCase
         array $query = [],
         array $headers = [],
         array $cookies = []
-    ): ServerRequest {
+    ): ServerRequestInterface {
         $headers = array_merge([
             'accept-language' => 'en'
         ], $headers);
 
-        return new ServerRequest(
-            [],
-            [],
-            $uri,
-            $method,
-            'php://input',
-            $headers,
-            $cookies,
-            $query
-        );
+        /** @var ServerRequestFactoryInterface $factory */
+        $factory = $this->app->getContainer()->get(ServerRequestFactoryInterface::class);
+        $request = $factory->createServerRequest($method, $uri);
+
+        foreach ($headers as $name => $value) {
+            $request = $request->withAddedHeader($name, $value);
+        }
+
+        return $request
+            ->withCookieParams($cookies)
+            ->withQueryParams($query);
     }
 
     public function fetchCookies(array $header)
