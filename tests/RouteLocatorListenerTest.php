@@ -33,7 +33,7 @@ final class RouteLocatorListenerTest extends TestCase
 
         $groups = $this->container->get(GroupRegistry::class);
 
-        self::assertSame(['web'], \array_keys(\iterator_to_array($groups)));
+        $this->assertSame(['web'], \array_keys(\iterator_to_array($groups)));
     }
 
     public function testChangedDefaultGroup(): void
@@ -46,7 +46,7 @@ final class RouteLocatorListenerTest extends TestCase
 
         $groups = $this->container->get(GroupRegistry::class);
 
-        self::assertSame(['other'], \array_keys(\iterator_to_array($groups)));
+        $this->assertSame(['other'], \array_keys(\iterator_to_array($groups)));
     }
 
     private function configureRouter(): void
@@ -56,7 +56,7 @@ final class RouteLocatorListenerTest extends TestCase
         $this->container->bindSingleton(UriFactoryInterface::class, new Psr17Factory());
         $this->container->bindSingleton(
             RouterInterface::class,
-            static fn(UriHandler $handler, Container $container): RouterInterface => new Router(
+            static fn(UriHandler $handler, Container $container) => new Router(
                 '/',
                 $handler,
                 $container,
