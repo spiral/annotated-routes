@@ -21,11 +21,11 @@
         },
         {
             "name": "Pavel Butchnev (butschster)",
-            "email": "pavel.buchnev@spiralscout.com"
+            "homepage": "https://github.com/butschster"
         },
         {
             "name": "Aleksei Gagarin (roxblnfk)",
-            "email": "alexey.gagarin@spiralscout.com"
+            "homepage": "https://github.com/roxblnfk"
         },
         {
             "name": "Maksim Smakouz (msmakouz)",
@@ -35,7 +35,7 @@
     "require": {
         "php": ">=8.1",
         "spiral/attributes": "^2.8|^3.0",
-        "spiral/router": "^3.16"
+        "spiral/router": "^3.17"
     },
     "autoload": {
         "psr-4": {
