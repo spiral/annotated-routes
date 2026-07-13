@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Router;
 
-use PHPUnit\Framework\TestCase;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\UriFactoryInterface;
 use Spiral\Attributes\Factory;
@@ -21,6 +20,11 @@ final class RouteLocatorListenerTest extends TestCase
     private RouteLocatorListener $listener;
     private Container $container;
 
+    protected function setUp(): void
+    {
+        $this->configureRouter();
+    }
+
     public function testDefaultGroup(): void
     {
         $this->listener->listen(new \ReflectionClass(PageController::class));
@@ -28,7 +32,7 @@ final class RouteLocatorListenerTest extends TestCase
 
         $groups = $this->container->get(GroupRegistry::class);
 
-        self::assertSame(['web'], \array_keys(\iterator_to_array($groups)));
+        $this->assertSame(['web'], \array_keys(\iterator_to_array($groups)));
     }
 
     public function testChangedDefaultGroup(): void
@@ -41,12 +45,7 @@ final class RouteLocatorListenerTest extends TestCase
 
         $groups = $this->container->get(GroupRegistry::class);
 
-        self::assertSame(['other'], \array_keys(\iterator_to_array($groups)));
-    }
-
-    protected function setUp(): void
-    {
-        $this->configureRouter();
+        $this->assertSame(['other'], \array_keys(\iterator_to_array($groups)));
     }
 
     private function configureRouter(): void
@@ -54,19 +53,14 @@ final class RouteLocatorListenerTest extends TestCase
         $this->container = new Container();
 
         $this->container->bindSingleton(UriFactoryInterface::class, new Psr17Factory());
-        $this->container->bindSingleton(
-            RouterInterface::class,
-            static fn(UriHandler $handler, Container $container): RouterInterface => new Router(
-                '/',
-                $handler,
-                $container,
-            ),
-        );
+        $this->container->bindSingleton(RouterInterface::class, static function (UriHandler $handler, Container $container) {
+            return new Router('/', $handler, $container);
+        });
         $this->container->bindSingleton(GroupRegistry::class, new GroupRegistry($this->container));
 
         $this->listener = new RouteLocatorListener(
             (new Factory())->create(),
-            $this->container->get(GroupRegistry::class),
+            $this->container->get(GroupRegistry::class)
         );
     }
 }

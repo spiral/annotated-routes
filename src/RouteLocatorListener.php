@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Spiral\Router;
 
+use ReflectionClass;
+use ReflectionMethod;
 use Spiral\Attributes\ReaderInterface;
 use Spiral\Router\Annotation\Route;
 use Spiral\Router\Target\Action;
@@ -13,15 +15,16 @@ use Spiral\Tokenizer\TokenizationListenerInterface;
 #[TargetAttribute(Route::class, useAnnotations: true)]
 final class RouteLocatorListener implements TokenizationListenerInterface
 {
-    /** @var array<array-key, array{\ReflectionMethod, Route}> */
+    /** @var array<array-key, array{ReflectionMethod, Route}> */
     private array $attributes = [];
 
     public function __construct(
         private readonly ReaderInterface $reader,
         private readonly GroupRegistry $groups,
-    ) {}
+    ) {
+    }
 
-    public function listen(\ReflectionClass $class): void
+    public function listen(ReflectionClass $class): void
     {
         foreach ($class->getMethods() as $method) {
             $route = $this->reader->firstFunctionMetadata($method, Route::class);
@@ -48,14 +51,14 @@ final class RouteLocatorListener implements TokenizationListenerInterface
                 'controller' => $class->getName(),
                 'action' => $method->getName(),
                 'group' => $route->group ?? $defaultGroup,
-                'verbs' => (array) $route->methods,
+                'verbs' => (array)$route->methods,
                 'defaults' => $route->defaults,
                 'middleware' => $route->middleware,
                 'priority' => $route->priority,
             ];
         }
 
-        \uasort($routes, static fn(array $route1, array $route2): int => $route1['priority'] <=> $route2['priority']);
+        \uasort($routes, static fn (array $route1, array $route2) => $route1['priority'] <=> $route2['priority']);
 
         $this->configureRoutes($routes);
     }
@@ -66,7 +69,7 @@ final class RouteLocatorListener implements TokenizationListenerInterface
             $route = new \Spiral\Router\Route(
                 $schema['pattern'],
                 new Action($schema['controller'], $schema['action']),
-                $schema['defaults'],
+                $schema['defaults']
             );
 
             $this->groups
