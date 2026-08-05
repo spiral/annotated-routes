@@ -6,7 +6,7 @@ namespace Spiral\Tests\Router\App\Controller;
 
 use Spiral\Router\Annotation\Route;
 
-final class HomeController
+class HomeController
 {
     #[Route(route: '/', name: 'index', methods: 'GET')]
     public function index(): string
