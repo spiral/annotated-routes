@@ -2,7 +2,6 @@
     "name": "spiral/annotated-routes",
     "type": "library",
     "description": "Annotated routes for Spiral Framework",
-    "keywords": ["spiral", "router", "routing", "attributes", "annotations"],
     "license": "MIT",
     "funding": [
         {
@@ -34,9 +33,9 @@
         }
     ],
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.1",
         "spiral/attributes": "^2.8|^3.0",
-        "spiral/router": "^3.18.1"
+        "spiral/router": "^3.18.2"
     },
     "autoload": {
         "psr-4": {
@@ -49,7 +48,7 @@
         "spiral/framework": "^3.1",
         "spiral/testing": "^2.12",
         "spiral/nyholm-bridge": "^1.3",
-        "vimeo/psalm": "^7.0.2"
+        "vimeo/psalm": "^6.0"
     },
     "autoload-dev": {
         "psr-4": {
